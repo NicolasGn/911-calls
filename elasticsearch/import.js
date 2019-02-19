@@ -9,10 +9,6 @@ var esClient = new elasticsearch.Client({
   log: 'error'
 });
 
-esClient.indices.delete({
-  index: callsIndex
-});
-
 esClient.indices
   .create({
     index: callsIndex,
@@ -26,6 +22,16 @@ esClient.indices
           properties: {
             location: {
               type: 'geo_point'
+            },
+            cat: {
+              type: 'keyword'
+            },
+            date: {
+              type: 'date',
+              format: 'yyyy-MM-dd HH:mm:ss'
+            },
+            twp: {
+              type: 'keyword'
             }
           }
         }
@@ -39,7 +45,7 @@ let calls = [];
 fs.createReadStream('../911.csv')
   .pipe(csv())
   .on('data', data => {
-    const { desc, title, twp, addr } = data;
+    const { desc, title, twp, addr, timeStamp } = data;
     const cat = title.split(':')[0];
     calls.push({
       cat,
@@ -47,6 +53,7 @@ fs.createReadStream('../911.csv')
       title,
       twp,
       addr,
+      date: timeStamp,
       location: {
         lat: parseFloat(data.lat),
         lon: parseFloat(data.lng)
