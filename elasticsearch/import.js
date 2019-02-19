@@ -20,6 +20,15 @@ esClient.indices
       settings: {
         number_of_shards: 1,
         number_of_replicas: 1
+      },
+      mappings: {
+        call: {
+          properties: {
+            location: {
+              type: 'geo_point'
+            }
+          }
+        }
       }
     }
   })
@@ -30,13 +39,18 @@ let calls = [];
 fs.createReadStream('../911.csv')
   .pipe(csv())
   .on('data', data => {
-    delete data.e;
-    const cat = data.title.split(':')[0];
+    const { desc, title, twp, addr } = data;
+    const cat = title.split(':')[0];
     calls.push({
-      ...data,
       cat,
-      lat: parseFloat(data.lat),
-      lng: parseFloat(data.lng),
+      desc,
+      title,
+      twp,
+      addr,
+      location: {
+        lat: parseFloat(data.lat),
+        lon: parseFloat(data.lng)
+      },
       zip: parseInt(data.zip)
     });
   })
