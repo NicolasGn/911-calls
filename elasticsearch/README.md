@@ -118,7 +118,9 @@ Dans Kibana, créez un dashboard qui permet de visualiser :
 - Un histogramme des appels répartis par catégories
 - Un Pie chart réparti par bimestre, par catégories et par canton (township)
 
-Pour nous permettre d'évaluer votre travail, ajoutez une capture d'écran du dashboard dans ce répertoire [images](images).
+Pour nous permettre d'évaluer votre travail, ajoutez une capture d'écran du dashboard dans ce répertoire.
+
+![](images/kibana.png)
 
 ### Timelion
 
