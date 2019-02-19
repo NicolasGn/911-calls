@@ -26,6 +26,10 @@ esClient.indices
             cat: {
               type: 'keyword'
             },
+            type: {
+              type: 'text',
+              fielddata: true
+            },
             date: {
               type: 'date',
               format: 'yyyy-MM-dd HH:mm:ss'
@@ -47,10 +51,11 @@ fs.createReadStream('../911.csv')
   .on('data', data => {
     const { desc, title, twp, addr, timeStamp } = data;
     const cat = title.split(':')[0];
+    const type = title.slice(cat.length + 2); // +2 to remove the space after ':'
     calls.push({
       cat,
       desc,
-      title,
+      type,
       twp,
       addr,
       date: timeStamp,
