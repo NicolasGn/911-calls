@@ -9,23 +9,21 @@ var esClient = new elasticsearch.Client({
   log: 'error'
 });
 
-esClient.indices.delete(
-  {
-    index: callsIndex
-  },
-  error => {
-    if (error) console.trace(error.message);
-  }
-);
+esClient.indices.delete({
+  index: callsIndex
+});
 
-esClient.indices.create(
-  {
-    index: callsIndex
-  },
-  error => {
-    if (error) console.trace(error.message);
-  }
-);
+esClient.indices
+  .create({
+    index: callsIndex,
+    body: {
+      settings: {
+        number_of_shards: 1,
+        number_of_replicas: 1
+      }
+    }
+  })
+  .catch(error => console.trace(error.message));
 
 let calls = [];
 
@@ -33,8 +31,10 @@ fs.createReadStream('../911.csv')
   .pipe(csv())
   .on('data', data => {
     delete data.e;
+    const cat = data.title.split(':')[0];
     calls.push({
       ...data,
+      cat,
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng),
       zip: parseInt(data.zip)
