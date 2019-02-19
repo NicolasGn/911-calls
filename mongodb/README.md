@@ -49,14 +49,31 @@ db.calls.find(
 
 ### Compter le nombre d'appels par catégorie
 ```
+db.calls.aggregate( [
+    { $group: { _id: "$categorie",nbAppel: {$sum: 1}} }
+] )
 ```
 
 ### Trouver les 3 mois ayant comptabilisés le plus d'appels
 ```
+db.calls.aggregate([
+  { $project : { month: { $month : "$date" }, year: { $year: "$date" } } },
+  { $project : { monthYear: { $concat: [{ $substr: ["$month",0,2] }, "/", { $substr: ["$year",0,4] }] } } },
+  { $group: { _id: "$monthYear", count: { $sum: 1 } } },
+  { $sort: { count: -1 } },
+  { $limit: 3 }
+])
 ```
 
 ### Trouver le top 3 des villes avec le plus d'appels pour overdose
 ```
+db.calls.aggregate( [
+    { $match : { $text: { $search : "overdose" } } },
+    { $group: { _id: "$twp", nbAppel: {$sum: 1}} },
+    { $project: { _id: 1, nbAppel: 1 } },
+    { $sort: { nbAppel: -1 } },
+    { $limit: 3 }
+] )
 ```
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :

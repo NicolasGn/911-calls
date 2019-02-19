@@ -20,8 +20,8 @@ var insertCalls = function(db, callback) {
               "desc": data.desc,
               "zip": data.zip,
               "categorie": data.title.substring(0,data.title.indexOf(':')),
-              "summary": data.title.substring(data.title.indexOf(':')+2,data.title.length),
-              "timestamp": data.timeStamp,
+              "summary": data.title.substring(data.title.indexOf(':')+2,data.title.length).trim(),
+              "date": new Date(data.timeStamp),
               "twp": data.twp,
               "addr": data.addr,
               "e": data.e
